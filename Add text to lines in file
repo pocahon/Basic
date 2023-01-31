@@ -1,0 +1,1 @@
+awk  '{print "http://" $1}' urls.txt
