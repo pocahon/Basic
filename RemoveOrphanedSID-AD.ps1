@@ -8,7 +8,7 @@ $ForestName = $Forest.rootDomainNamingContext
 $DomainDNS = "DC=DomainDnsZones,$ForestName"
 $ForestDNS = "DC=ForestDnsZones,$ForestName"
 
-$domsid = (Get-ADDomain).domainsid.tostring()
+$domsid = (Get-ADDomain -Server 10.2.0.103).domainsid.tostring()
 
 if (($Action) -and ($Action.ToUpper() -like "/LIST")) { $Remove = $False; $OU = $False }
 elseif (($Action) -and ($Action.ToUpper() -like "/LISTOU")) { $Remove = $False; $OU = $True }
