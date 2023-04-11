@@ -6,7 +6,7 @@ Function Get-OrphanedADObjects {
     )
     Import-Module ActiveDirectory
     $orphans = @()
-    $domain = Get-ADDomain -Server $ServerName
+    $domain = Get-ADDomain -Server $ServerName -Timeout 120
     $sidFilter = "SID=*"
     $searcher = New-Object System.DirectoryServices.DirectorySearcher
     $searcher.SearchRoot = [ADSI]"LDAP://$($domain.DistinguishedName)"
