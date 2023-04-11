@@ -1,6 +1,11 @@
+[CmdletBinding()]
+param (
+    [Parameter(Mandatory=$true, HelpMessage="Specify the name of the Active Directory server")]
+    [string]$ServerName
+)
 Import-Module ActiveDirectory
 $orphans = @()
-$domain = Get-ADDomain
+$domain = Get-ADDomain -Server $ServerName
 $sidFilter = "SID=*"
 $searcher = New-Object System.DirectoryServices.DirectorySearcher
 $searcher.SearchRoot = [ADSI]"LDAP://$($domain.DistinguishedName)"
