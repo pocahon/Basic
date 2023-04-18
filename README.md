@@ -1,4 +1,4 @@
-![alt text](https://github.com/HeeresS/Small-Code/blob/main/logo.png?raw=true)
+![alt text](https://github.com/HeeresS/Small-Code/blob/main/4a5d13b5f79a46b2a78a382da632d97d.png?raw=true)
 # Small-Code
 Small codes that will help with daily tasks for Linux and Windows. 
 ### Add text to line
