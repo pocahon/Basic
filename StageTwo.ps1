@@ -1,4 +1,4 @@
-Write-Host "-- Stage Two succeeded"
+Write-Host "-- Stage Two succeeded" -ForegroundColor Green
 Write-Host "-- Modified By: HeeresS"
 Write-Host "-- Modified By: Shantanu Khandelwal (@shantanukhande)"
 Write-Host "-- Original Author: Paul Laîné (@am0nsec)"
