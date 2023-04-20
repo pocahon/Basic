@@ -1,4 +1,3 @@
-Write-Host "-- Stage Two succeeded" -ForegroundColor Green
 Write-Host "-- Modified By: HeeresS"
 Write-Host "-- Modified By: Shantanu Khandelwal (@shantanukhande)"
 Write-Host "-- Original Author: Paul Laîné (@am0nsec)"
@@ -124,3 +123,4 @@ $patch = [byte[]] (
 
 $a = 0
 $VirtualProtect.Invoke($targetedAddress, [uint32]2, $oldProtectionBuffer, [ref]$a) | Out-Null
+Write-Host "Stage Two succeeded" -ForegroundColor Green
