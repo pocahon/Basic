@@ -1,4 +1,5 @@
-Write-Host "-- AMSI Patch"
+Write-Host "-- Stage Two succeeded"
+Write-Host "-- Modified By: HeeresS"
 Write-Host "-- Modified By: Shantanu Khandelwal (@shantanukhande)"
 Write-Host "-- Original Author: Paul Laîné (@am0nsec)"
 Write-Host ""
