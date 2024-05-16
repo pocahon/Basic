@@ -69,7 +69,7 @@ IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com
 ~~~
 function Invoke-PathCheck {
     param (
-        [string]$AccesschkPath = "C:\Path\to\accesschk64.exe"
+        [string]$AccesschkPath = "accesschk64.exe"
     )
 
     # Controleer of accesschk64.exe bestaat
