@@ -69,7 +69,7 @@ IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com
 ~~~
 function Invoke-PathCheck {
     param (
-        [string]$AccesschkPath = "accesschk64.exe"
+        [string]$AccesschkPath = ".\accesschk64.exe"
     )
 
     # Controleer of accesschk64.exe bestaat
@@ -82,8 +82,8 @@ function Invoke-PathCheck {
     $Env:Path -split ";" | ForEach-Object {
         $path = $_.Trim()
         if (-Not [string]::IsNullOrWhiteSpace($path)) {
-            Write-Host "Checking permissions for: $path"
-            & $AccesschkPath -wvud -accepteula $path
+            Write-Host "[+] Checking permissions for: $path"
+            & $AccesschkPath -wud -accepteula $path
             Write-Host "---------------------------"
         }
     }
