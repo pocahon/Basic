@@ -94,5 +94,5 @@ Invoke-PathCheck -AccesschkPath "C:\Path\to\accesschk64.exe"
 ~~~
 ##### Just check PATH
 ~~~
-$Env:Path -split ";" | ForEach-Object { $_
+$Env:Path -split ";" | ForEach-Object { $_ }
 ~~~
