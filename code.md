@@ -92,3 +92,7 @@ function Invoke-PathCheck {
 # Roep de functie aan
 Invoke-PathCheck -AccesschkPath "C:\Path\to\accesschk64.exe"
 ~~~
+##### Just check PATH
+~~~
+$Env:Path -split ";" | ForEach-Object { $_
+~~~
