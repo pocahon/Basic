@@ -47,7 +47,6 @@ echo "[+] Starting scan against domain: $domain"
 ## DNS Enumeration - Find Subdomains
 echo "[+] Gathering subdomains for $domain..."
 echo "$domain" | subfinder -silent | anew subs.txt | wc -l
-echo "$domain" | shuffledns -mode resolve -w "$ppath/lists/pry-dns.txt" -r "$ppath/lists/resolvers.txt" -silent | anew subs.txt | wc -l
 
 ## DNS Resolution using httpx
 echo "[+] Resolving discovered subdomains with httpx..."
