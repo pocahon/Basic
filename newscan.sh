@@ -33,7 +33,7 @@ fi
 # Set variables
 ppath="$(pwd)"
 date=$(date +%Y-%m-%d)
-scan_path="$ppath/scans/${domain}_$date"
+scan_path="${ppath}/${domain}_${date}"
 start_time=$(date +%s)
 
 # Create the scan directory
@@ -50,10 +50,10 @@ echo "$domain" | subfinder -silent | anew subs.txt | wc -l
 
 ## DNS Resolution using httpx
 echo "[+] Resolving discovered subdomains with httpx..."
-cat subs.txt | httpx -silent -json -o "$scan_path/httpx.json"
+cat subs.txt | httpx -silent -json -o "${scan_path}/httpx.json" -r "${ppath}/lists/resolvers.txt"
 
 ## Extracting IPs from httpx results
-jq -r '.a[]? // empty' "$scan_path/httpx.json" | anew "$scan_path/ips.txt" | wc -l
+jq -r '.a[]? // empty' "${scan_path}/httpx.json" | anew "${scan_path}/ips.txt" | wc -l
 
 ################# ADD SCAN LOGIC HERE ###################
 
