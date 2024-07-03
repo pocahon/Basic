@@ -50,18 +50,10 @@ echo "$domain" | subfinder -silent | anew subs.txt | wc -l
 
 ## DNS Resolution using httpx
 echo "[+] Resolving discovered subdomains with httpx..."
-cat subs.txt | httpx -silent -json -o "$scan_path/httpx.json" -r "$ppath/lists/resolvers.txt"
+cat subs.txt | httpx -silent -json -o "$scan_path/httpx.json"
 
 ## Extracting IPs from httpx results
 jq -r '.a[]? // empty' "$scan_path/httpx.json" | anew "$scan_path/ips.txt" | wc -l
-
-## HTTP Server Discovery
-echo "[+] Performing HTTP server discovery..."
-cat "$scan_path/httpx.json" | jq -r '.url' | anew "$scan_path/http_urls.txt"
-httpx -sr -srd "$scan_path/responses" -l "$scan_path/http_urls.txt" -json -o "$scan_path/http_results.json" -silent
-
-echo "[+] Processing HTTP results..."
-cat "$scan_path/http_results.json" | jq -r '.url' | sed -e 's/:80$//g' -e 's/:443$//g' | sort -u > "$scan_path/http.txt"
 
 ################# ADD SCAN LOGIC HERE ###################
 
