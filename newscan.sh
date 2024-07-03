@@ -32,9 +32,8 @@ fi
 
 # Set variables
 ppath="$(pwd)"
-date=$(date +%Y-%m-%d)
 random_str=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 6)  # Generate a random 6-character string
-scan_path="${ppath}/${domain}_${date}_${random_str}"
+scan_path="${ppath}/${domain}_${random_str}"
 start_time=$(date +%s)
 
 # Create the scan directory
@@ -60,12 +59,11 @@ jq -r '.a[]? // empty' "${scan_path}/httpx.json" | anew "${scan_path}/ips.txt" |
 
 # Calculate time difference
 end_time=$(date +%s)
-seconds="$(expr $end_time - $start_time)"
+seconds=$((end_time - start_time))
 time=""
 
-if [[ "$seconds" -gt 59 ]]
-then
-    minutes=$(expr $seconds / 60)
+if [[ "$seconds" -gt 59 ]]; then
+    minutes=$((seconds / 60))
     time="$minutes minutes"
 else
     time="$seconds seconds"
