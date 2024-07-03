@@ -33,7 +33,8 @@ fi
 # Set variables
 ppath="$(pwd)"
 date=$(date +%Y-%m-%d)
-scan_path="${ppath}/${domain}_${date}"
+random_str=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 6)  # Generate a random 6-character string
+scan_path="${ppath}/${domain}_${date}_${random_str}"
 start_time=$(date +%s)
 
 # Create the scan directory
@@ -50,7 +51,7 @@ echo "$domain" | subfinder -silent | anew subs.txt | wc -l
 
 ## DNS Resolution using httpx
 echo "[+] Resolving discovered subdomains with httpx..."
-cat subs.txt | httpx -silent -json -o "${scan_path}/httpx.json"
+cat subs.txt | httpx -silent -json -o "${scan_path}/httpx.json" -r "${ppath}/lists/resolvers.txt"
 
 ## Extracting IPs from httpx results
 jq -r '.a[]? // empty' "${scan_path}/httpx.json" | anew "${scan_path}/ips.txt" | wc -l
