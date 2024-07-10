@@ -96,3 +96,41 @@ Invoke-PathCheck -AccesschkPath "C:\Path\to\accesschk64.exe"
 ~~~
 $Env:Path -split ";" | ForEach-Object { $_ }
 ~~~
+##### Invoke-PasswordSearch
+~~~
+function Invoke-PasswordSearch {
+    param (
+        [Parameter(Mandatory=$true)]
+        [string]$SharesFilePath
+    )
+
+    # Lees alle paden uit het tekstbestand
+    $paths = Get-Content -Path $SharesFilePath
+
+    $results = @()
+
+    foreach ($path in $paths) {
+        # Controleer of het pad niet leeg is
+        if (![string]::IsNullOrWhiteSpace($path)) {
+            Write-Host "Processing path: $path"
+            try {
+                $matches = Get-ChildItem -Path $path -Recurse -File | Select-String "password="
+                $results += $matches | ForEach-Object {
+                    [PSCustomObject]@{
+                        Path       = $_.Path
+                        Line       = $_.Line
+                        LineNumber = $_.LineNumber
+                    }
+                }
+            } catch {
+                Write-Host "Failed to process path: $path"
+            }
+        }
+    }
+
+    # Retourneer de resultaten
+    return $results
+}
+
+# Voorbeeld van het aanroepen van de functie en het opslaan van de resultaten in een variabele
+# $searchResults = Invoke-PasswordSearch -SharesFilePath "C:\path\to\shares.txt"
