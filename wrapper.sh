@@ -34,8 +34,8 @@ fi
 timestamp=$(date +"%Y%m%d_%H%M%S")
 
 # Perform subdomain enumeration and HTTP probing
-echo "$domain" | subfinder -silent -all | httpx -silent -o "subs_${domain}_${timestamp}"
-echo "$domain" | subfinder -silent -all | httpx -silent -title -bp -server -td -o "info_${domain}_${timestamp}"
+echo "$domain" | subfinder -silent -all | httpx -silent -o "subs_${domain}_${timestamp}.txt"
+echo "$domain" | subfinder -silent -all | httpx -silent -title -bp -server -td -o "info_${domain}_${timestamp}.txt"
 echo "$domain" | subfinder -silent -all | httpx -silent -ss 
 
 echo "Subdomain enumeration and HTTP probing completed."
