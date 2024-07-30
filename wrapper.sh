@@ -30,10 +30,12 @@ if [ -z "$domain" ]; then
     exit 1
 fi
 
-# Generate a random 6-character string for filename
-random_str=$(head /dev/urandom | tr -dc A-Za-z0-9 | head -c 6)
+# Generate a timestamp for filename
+timestamp=$(date +"%Y%m%d_%H%M%S")
 
 # Perform subdomain enumeration and HTTP probing
-echo "$domain" | subfinder -silent | httpx -csv -o "${domain}_${random_str}"
+echo "$domain" | subfinder -silent -all | httpx -silent -o "subs_${domain}_${timestamp}"
+echo "$domain" | subfinder -silent -all | httpx -silent -title -bp -server -td -o "info_${domain}_${timestamp}"
+echo "$domain" | subfinder -silent -all | httpx -silent -ss 
 
 echo "Subdomain enumeration and HTTP probing completed."
