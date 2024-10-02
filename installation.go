@@ -10,6 +10,11 @@ import (
 	"bufio"
 )
 
+// updatePath voegt de Go-bin-directory toe aan de huidige PATH variabele
+func updatePath() {
+	os.Setenv("PATH", os.Getenv("PATH")+":/home/kali/go/bin")
+}
+
 func runCommand(command string, args ...string) {
 	cmd := exec.Command(command, args...)
 	cmd.Stdout = os.Stdout
@@ -21,43 +26,36 @@ func runCommand(command string, args ...string) {
 }
 
 func downloadFile(filepath string, url string) error {
-	// Maak de request
 	resp, err := http.Get(url)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
 
-	// Maak het bestand
 	out, err := os.Create(filepath)
 	if err != nil {
 		return err
 	}
 	defer out.Close()
 
-	// Kopieer de inhoud naar het bestand
 	_, err = io.Copy(out, resp.Body)
 	return err
 }
 
 func appendToZshrc(line string) error {
-	// Open het bestand in append-modus, of maak het bestand als het niet bestaat
 	file, err := os.OpenFile(os.Getenv("HOME")+"/.zshrc", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
 		return err
 	}
 	defer file.Close()
 
-	// Controleer of de regel al bestaat
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		if scanner.Text() == line {
-			// Als de regel al bestaat, doe niets
 			return nil
 		}
 	}
 
-	// Voeg de regel toe aan het bestand
 	_, err = file.WriteString(line + "\n")
 	return err
 }
@@ -65,17 +63,16 @@ func appendToZshrc(line string) error {
 func main() {
 	fmt.Println("Start installatie van pdtm en tools van Tomnomnom...")
 
-	// Zorg ervoor dat de Go bin directory aan de PATH wordt toegevoegd
+	// Update de PATH variabele in de huidige sessie
+	updatePath()
+
+	// Zorg ervoor dat de Go bin directory aan de PATH wordt toegevoegd in toekomstige shells
 	fmt.Println("Voeg /home/kali/go/bin toe aan PATH in ~/.zshrc...")
 	err := appendToZshrc("export PATH=$PATH:/home/kali/go/bin")
 	if err != nil {
 		fmt.Printf("Fout bij het updaten van ~/.zshrc: %v\n", err)
 		return
 	}
-
-	// Voer source ~/.zshrc uit om de wijzigingen door te voeren
-	fmt.Println("Update de shell met source ~/.zshrc...")
-	runCommand("source", os.Getenv("HOME")+"/.zshrc")
 
 	// Installeer pdtm van Project Discovery
 	fmt.Println("Installeer pdtm van Project Discovery...")
