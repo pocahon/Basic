@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"bufio"
 	"strings"
+	"regexp"
 )
 
 // updatePath voegt de Go-bin-directory toe aan de huidige PATH variabele
@@ -68,18 +69,16 @@ func getWordlistFiles(baseURL string) ([]string, error) {
 	}
 	defer resp.Body.Close()
 
-	// Verwerk de HTML response om de bestandsnamen te extraheren
+	// Regex om href links te vinden
+	re := regexp.MustCompile(`href="([^"]+)"`)
 	var files []string
 	scanner := bufio.NewScanner(resp.Body)
 	for scanner.Scan() {
 		line := scanner.Text()
-		if strings.Contains(line, "href=") {
-			// Zoek naar de bestandsnamen in de HTML-links
-			start := strings.Index(line, "href=")
-			end := strings.Index(line[start:], "\"") + start
-			if end > start {
-				fileName := line[start+6 : end-1] // Verwijder "href=\"" en de afsluitende "\""
-				files = append(files, fileName)
+		matches := re.FindAllStringSubmatch(line, -1)
+		for _, match := range matches {
+			if len(match) > 1 {
+				files = append(files, match[1])
 			}
 		}
 	}
@@ -146,12 +145,15 @@ func main() {
 	}
 
 	for _, file := range files {
-		fileURL := wordlistBaseURL + file
-		destPath := filepath.Join(wordlistDir, file)
-		fmt.Printf("Download %s...\n", file)
-		err := downloadFile(destPath, fileURL)
-		if err != nil {
-			fmt.Printf("Fout bij het downloaden van %s: %v\n", file, err)
+		// Zorg ervoor dat we alleen de bestanden downloaden die eindigen op .txt
+		if strings.HasSuffix(file, ".txt") {
+			fileURL := wordlistBaseURL + file
+			destPath := filepath.Join(wordlistDir, file)
+			fmt.Printf("Download %s...\n", file)
+			err := downloadFile(destPath, fileURL)
+			if err != nil {
+				fmt.Printf("Fout bij het downloaden van %s: %v\n", file, err)
+			}
 		}
 	}
 
