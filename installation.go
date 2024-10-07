@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"bufio"
+	"strings"
 )
 
 // updatePath voegt de Go-bin-directory toe aan de huidige PATH variabele
@@ -60,6 +61,31 @@ func appendToZshrc(line string) error {
 	return err
 }
 
+func getWordlistFiles(baseURL string) ([]string, error) {
+	resp, err := http.Get(baseURL)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	// Verwerk de HTML response om de bestandsnamen te extraheren
+	var files []string
+	scanner := bufio.NewScanner(resp.Body)
+	for scanner.Scan() {
+		line := scanner.Text()
+		if strings.Contains(line, "href=") {
+			// Zoek naar de bestandsnamen in de HTML-links
+			start := strings.Index(line, "href=")
+			end := strings.Index(line[start:], "\"") + start
+			if end > start {
+				fileName := line[start+6 : end-1] // Verwijder "href=\"" en de afsluitende "\""
+				files = append(files, fileName)
+			}
+		}
+	}
+	return files, scanner.Err()
+}
+
 func main() {
 	fmt.Println("Start installatie van pdtm en tools van Tomnomnom...")
 
@@ -102,8 +128,35 @@ func main() {
 		return
 	}
 
+	// Maak de map ~/Documents/wordlists aan
+	wordlistDir := filepath.Join(os.Getenv("HOME"), "Documents", "wordlists")
+	fmt.Println("Maak de map ~/Documents/wordlists aan...")
+	err = os.MkdirAll(wordlistDir, os.ModePerm)
+	if err != nil {
+		fmt.Printf("Fout bij het aanmaken van de map ~/Documents/wordlists: %v\n", err)
+		return
+	}
+
+	// Download alle wordlists van de gegeven URL
+	wordlistBaseURL := "https://wordlists-cdn.assetnote.io/data/manual/"
+	files, err := getWordlistFiles(wordlistBaseURL)
+	if err != nil {
+		fmt.Printf("Fout bij het ophalen van wordlist-bestanden: %v\n", err)
+		return
+	}
+
+	for _, file := range files {
+		fileURL := wordlistBaseURL + file
+		destPath := filepath.Join(wordlistDir, file)
+		fmt.Printf("Download %s...\n", file)
+		err := downloadFile(destPath, fileURL)
+		if err != nil {
+			fmt.Printf("Fout bij het downloaden van %s: %v\n", file, err)
+		}
+	}
+
 	// Download JSON-bestanden van de gf GitHub repository
-	files := []string{
+	files = []string{
 		"aws-keys.json", "base64.json", "cors.json", "debug-pages.json",
 		"ip.json", "json-secure.json", "php-errors.json", "potential.json",
 		"servers.json", "strings.json", "takeovers.json", "uploads.json",
