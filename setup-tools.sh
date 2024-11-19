@@ -105,7 +105,7 @@ done
 
 # Controleer of Zsh correct is geïnstalleerd en stel het in als de standaard shell
 echo "Controleer en stel Zsh in als standaard shell..."
-chsh -s $(which zsh)
+sudo chsh -s $(which zsh) $USER
 
 # Voer source ~/.zshrc uit om de veranderingen toe te passen
 echo "Pas veranderingen toe met source ~/.zshrc..."
