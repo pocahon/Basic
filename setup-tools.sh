@@ -1,6 +1,10 @@
 #!/bin/bash
 
-# One-liner om dit uit te voeren: curl -s https://raw.githubusercontent.com/pocahon/Basic/refs/heads/main/setup-tools.sh | bash
+# One-liner voor de installatie: curl -s https://raw.githubusercontent.com/pocahon/Basic/refs/heads/main/setup-tools.sh | bash
+# Update de pakketlijst en installeer Go
+sudo apt update
+sudo apt install -y golang-go
+
 # Functie om de Go-bin-directory toe te voegen aan de huidige PATH variabele
 updatePath() {
     export PATH=$PATH:/home/kali/go/bin
