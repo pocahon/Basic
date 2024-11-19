@@ -1,3 +1,3 @@
-<img src="https://static-00.iconduck.com/assets.00/github-octocat-icon-2048x1800-53ry4fpw.png" size=70>
+<img src="https://github.githubassets.com/assets/GitHub-Mark-ea2971cee799.png>
 
 <H5>Just some code to help with several tasks</H5>
