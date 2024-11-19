@@ -1,9 +1,9 @@
 #!/bin/bash
 
 # One-liner voor de installatie: curl -s https://raw.githubusercontent.com/pocahon/Basic/refs/heads/main/setup-tools.sh | bash
-# Update de pakketlijst en installeer Go
+# Update de pakketlijst en installeer Go en Zsh
 sudo apt update
-sudo apt install -y golang-go
+sudo apt install -y golang-go zsh
 
 # Functie om de Go-bin-directory toe te voegen aan de huidige PATH variabele
 updatePath() {
@@ -103,8 +103,12 @@ for file in "${files[@]}"; do
     downloadFile "$destPath" "$fileURL"
 done
 
+# Controleer of Zsh correct is geïnstalleerd en stel het in als de standaard shell
+echo "Controleer en stel Zsh in als standaard shell..."
+chsh -s $(which zsh)
+
 # Voer source ~/.zshrc uit om de veranderingen toe te passen
 echo "Pas veranderingen toe met source ~/.zshrc..."
-source ~/.zshrc
+zsh -c "source ~/.zshrc"
 
 echo "Installatie voltooid!"
