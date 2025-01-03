@@ -30,11 +30,12 @@ downloadFile() {
     fi
 }
 
-# Functie om een regel toe te voegen aan .zshrc
-appendToZshrc() {
+# Functie om een regel toe te voegen aan een configuratiebestand
+appendToFile() {
     line="$1"
-    if ! grep -Fxq "$line" "$HOME/.zshrc"; then
-        echo "$line" >> "$HOME/.zshrc"
+    file="$2"
+    if ! grep -Fxq "$line" "$file"; then
+        echo "$line" >> "$file"
     fi
 }
 
@@ -44,15 +45,25 @@ getWordlistFiles() {
     curl -s "$baseURL" | grep -oP 'href="\K[^"]+(?=")' | grep "\.txt$"
 }
 
-# Start installatie van subfinder, httpx, shuffledns, dnsx en nuclei
-echo "Start installatie van subfinder, httpx, shuffledns, dnsx en nuclei..."
+# Start installatie van subfinder, httpx, shuffledns, dnsx, nuclei, gf en anew
+echo "Start installatie van subfinder, httpx, shuffledns, dnsx, nuclei, gf en anew..."
 
 # Update de PATH variabele in de huidige sessie
 updatePath
 
-# Voeg de Go bin directory toe aan PATH in ~/.zshrc
-echo "Voeg /home/kali/go/bin toe aan PATH in ~/.zshrc..."
-appendToZshrc 'export PATH=$PATH:/home/kali/go/bin'
+# Voeg de Go bin directory toe aan PATH in het juiste configuratiebestand
+SHELL_NAME=$(basename "$SHELL")
+if [ "$SHELL_NAME" = "bash" ]; then
+    CONFIG_FILE="$HOME/.bashrc"
+elif [ "$SHELL_NAME" = "zsh" ]; then
+    CONFIG_FILE="$HOME/.zshrc"
+else
+    echo "Ongeldige shell. Alleen bash en zsh worden ondersteund."
+    exit 1
+fi
+
+echo "Voeg ~/go/bin toe aan PATH in $CONFIG_FILE..."
+appendToFile 'export PATH=$PATH:~/go/bin' "$CONFIG_FILE"
 
 # Installeer subfinder
 echo "Installeer subfinder van ProjectDiscovery..."
@@ -73,6 +84,14 @@ runCommand go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
 # Installeer nuclei
 echo "Installeer nuclei van ProjectDiscovery..."
 runCommand go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
+
+# Installeer gf
+echo "Installeer gf van tomnomnom..."
+runCommand go install -v github.com/tomnomnom/gf@latest
+
+# Installeer anew
+echo "Installeer anew van tomnomnom..."
+runCommand go install -v github.com/tomnomnom/anew@latest
 
 # Maak de map /home/kali/.gf/ aan
 echo "Maak de map /home/kali/.gf/ aan..."
@@ -107,8 +126,8 @@ done
 echo "Controleer en stel Zsh in als standaard shell..."
 sudo chsh -s $(which zsh) $USER
 
-# Voer source ~/.zshrc uit om de veranderingen toe te passen
-echo "Pas veranderingen toe met source ~/.zshrc..."
-zsh -c "source ~/.zshrc"
+# Voer source $CONFIG_FILE uit om de veranderingen toe te passen
+echo "Pas veranderingen toe met source $CONFIG_FILE..."
+source "$CONFIG_FILE"
 
 echo "Installatie voltooid!"
