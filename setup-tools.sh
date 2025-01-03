@@ -7,7 +7,7 @@ sudo apt install -y golang-go zsh
 
 # Functie om de Go-bin-directory toe te voegen aan de huidige PATH variabele
 updatePath() {
-    export PATH=$PATH:/home/kali/go/bin
+    export PATH=$PATH:~/go/bin
 }
 
 # Functie om een commando uit te voeren
