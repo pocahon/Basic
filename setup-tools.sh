@@ -98,9 +98,13 @@ for file in "aws-keys.json" "base64.json" "cors.json" "debug-pages.json" "ip.jso
     downloadFile "$GF_DIR/$file" "$baseURL$file"
 done
 
-# Controleer of Zsh correct is geïnstalleerd en stel het in als de standaard shell
-echo "Controleer en stel Zsh in als standaard shell..."
-sudo chsh -s $(which zsh) $USER
+# Controleer of Zsh correct is geïnstalleerd en stel het in als de standaard shell, tenzij Bash wordt gebruikt
+echo "Controleer en stel de standaard shell in..."
+if [ "$SHELL_NAME" = "zsh" ]; then
+    sudo chsh -s $(which zsh) $USER
+elif [ "$SHELL_NAME" = "bash" ]; then
+    sudo chsh -s $(which bash) $USER
+fi
 
 # Pas veranderingen toe
 echo "Pas veranderingen toe met source $CONFIG_FILE..."
