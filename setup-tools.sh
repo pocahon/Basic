@@ -1,13 +1,17 @@
 #!/bin/bash
 
 # One-liner voor de installatie: curl -s https://raw.githubusercontent.com/pocahon/Basic/refs/heads/main/setup-tools.sh | bash
-# Update de pakketlijst en installeer Go en Zsh
-sudo apt update
-sudo apt install -y golang-go zsh
+# Detecteer het pakketbeheer en installeer Go en Zsh
+if command -v apt &> /dev/null; then
+    sudo apt update && sudo apt install -y golang-go zsh curl
+else
+    echo "Niet-ondersteunde Linux-distributie. Dit script is alleen geschikt voor Kali Linux en Ubuntu."
+    exit 1
+fi
 
 # Functie om de Go-bin-directory toe te voegen aan de huidige PATH variabele
 updatePath() {
-    export PATH=$PATH:~/go/bin
+    export PATH=$PATH:$(go env GOPATH)/bin
 }
 
 # Functie om een commando uit te voeren
@@ -39,19 +43,13 @@ appendToFile() {
     fi
 }
 
-# Functie om bestanden van een URL te krijgen
-getWordlistFiles() {
-    baseURL="$1"
-    curl -s "$baseURL" | grep -oP 'href="\K[^"]+(?=")' | grep "\.txt$"
-}
-
-# Start installatie van subfinder, httpx, shuffledns, dnsx, nuclei, gf en anew
+# Start installatie van tools
 echo "Start installatie van subfinder, httpx, shuffledns, dnsx, nuclei, gf en anew..."
 
 # Update de PATH variabele in de huidige sessie
 updatePath
 
-# Voeg de Go bin directory toe aan PATH in het juiste configuratiebestand
+# Bepaal het juiste configuratiebestand
 SHELL_NAME=$(basename "$SHELL")
 if [ "$SHELL_NAME" = "bash" ]; then
     CONFIG_FILE="$HOME/.bashrc"
@@ -62,71 +60,49 @@ else
     exit 1
 fi
 
-echo "Voeg ~/go/bin toe aan PATH in $CONFIG_FILE..."
-appendToFile 'export PATH=$PATH:~/go/bin' "$CONFIG_FILE"
+echo "Voeg Go bin directory toe aan PATH in $CONFIG_FILE..."
+appendToFile 'export PATH=$PATH:$(go env GOPATH)/bin' "$CONFIG_FILE"
 
-# Installeer subfinder
-echo "Installeer subfinder van ProjectDiscovery..."
-runCommand go install github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest
-
-# Installeer httpx
-echo "Installeer httpx van ProjectDiscovery..."
-runCommand go install github.com/projectdiscovery/httpx/cmd/httpx@latest
-
-# Installeer shuffledns
-echo "Installeer shuffledns van ProjectDiscovery..."
-runCommand go install github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest
-
-# Installeer dnsx
-echo "Installeer dnsx van ProjectDiscovery..."
-runCommand go install github.com/projectdiscovery/dnsx/cmd/dnsx@latest
-
-# Installeer nuclei
-echo "Installeer nuclei van ProjectDiscovery..."
-runCommand go install github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest
-
-# Installeer gf
-echo "Installeer gf van tomnomnom..."
-runCommand go install -v github.com/tomnomnom/gf@latest
-
-# Installeer anew
-echo "Installeer anew van tomnomnom..."
-runCommand go install -v github.com/tomnomnom/anew@latest
-
-# Maak de map /home/kali/.gf/ aan
-echo "Maak de map /home/kali/.gf/ aan..."
-mkdir -p /home/kali/.gf
-
-# Maak de map ~/Documents/wordlists aan
-wordlistDir="$HOME/Documents/wordlists"
-echo "Maak de map ~/Documents/wordlists aan..."
-mkdir -p "$wordlistDir"
-
-# Download alle wordlists van de gegeven URL
-wordlistBaseURL="https://wordlists-cdn.assetnote.io/data/manual/"
-files=$(getWordlistFiles "$wordlistBaseURL")
-for file in $files; do
-    fileURL="$wordlistBaseURL$file"
-    destPath="$wordlistDir/$file"
-    echo "Download $file..."
-    downloadFile "$destPath" "$fileURL"
+# Installeer tools via Go
+for tool in "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest" \
+            "github.com/projectdiscovery/httpx/cmd/httpx@latest" \
+            "github.com/projectdiscovery/shuffledns/cmd/shuffledns@latest" \
+            "github.com/projectdiscovery/dnsx/cmd/dnsx@latest" \
+            "github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest" \
+            "github.com/tomnomnom/gf@latest" \
+            "github.com/tomnomnom/anew@latest"; do
+    echo "Installeer $(basename "$tool")..."
+    runCommand go install -v "$tool"
 done
 
-# Download JSON-bestanden van de gf GitHub repository
-files=("aws-keys.json" "base64.json" "cors.json" "debug-pages.json" "ip.json" "json-secure.json" "php-errors.json" "potential.json" "servers.json" "strings.json" "takeovers.json" "uploads.json" "urls.json")
+# Maak de gf-configuratiemap aan
+GF_DIR="$HOME/.gf"
+echo "Maak de map $GF_DIR aan..."
+mkdir -p "$GF_DIR"
+
+# Maak de wordlists-map aan
+WORDLIST_DIR="$HOME/Documents/wordlists"
+echo "Maak de map $WORDLIST_DIR aan..."
+mkdir -p "$WORDLIST_DIR"
+
+# Download alle wordlists
+wordlistBaseURL="https://wordlists-cdn.assetnote.io/data/manual/"
+echo "Download wordlists..."
+curl -s "$wordlistBaseURL" | grep -oP 'href="\K[^"]+(?=")' | grep "\.txt$" | while read -r file; do
+    downloadFile "$WORDLIST_DIR/$file" "$wordlistBaseURL$file"
+done
+
+# Download JSON-bestanden voor gf
 baseURL="https://raw.githubusercontent.com/tomnomnom/gf/master/examples/"
-for file in "${files[@]}"; do
-    fileURL="$baseURL$file"
-    destPath="/home/kali/.gf/$file"
-    echo "Download $file..."
-    downloadFile "$destPath" "$fileURL"
+for file in "aws-keys.json" "base64.json" "cors.json" "debug-pages.json" "ip.json" "json-secure.json" "php-errors.json" "potential.json" "servers.json" "strings.json" "takeovers.json" "uploads.json" "urls.json"; do
+    downloadFile "$GF_DIR/$file" "$baseURL$file"
 done
 
 # Controleer of Zsh correct is geïnstalleerd en stel het in als de standaard shell
 echo "Controleer en stel Zsh in als standaard shell..."
 sudo chsh -s $(which zsh) $USER
 
-# Voer source $CONFIG_FILE uit om de veranderingen toe te passen
+# Pas veranderingen toe
 echo "Pas veranderingen toe met source $CONFIG_FILE..."
 source "$CONFIG_FILE"
 
