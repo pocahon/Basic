@@ -44,7 +44,7 @@ appendToFile() {
 }
 
 # Start installatie van tools
-echo "Start installatie van subfinder, httpx, shuffledns, dnsx, nuclei, gf en anew..."
+echo "Start installatie van subfinder, httpx, shuffledns, dnsx, nuclei, gf, anew, waybackurls en uncover..."
 
 # Update de PATH variabele in de huidige sessie
 updatePath
@@ -70,7 +70,9 @@ for tool in "github.com/projectdiscovery/subfinder/v2/cmd/subfinder@latest" \
             "github.com/projectdiscovery/dnsx/cmd/dnsx@latest" \
             "github.com/projectdiscovery/nuclei/v2/cmd/nuclei@latest" \
             "github.com/tomnomnom/gf@latest" \
-            "github.com/tomnomnom/anew@latest"; do
+            "github.com/tomnomnom/anew@latest" \
+            "github.com/tomnomnom/waybackurls@latest" \
+            "github.com/projectdiscovery/uncover/cmd/uncover@latest"; do
     echo "Installeer $(basename "$tool")..."
     runCommand go install -v "$tool"
 done
