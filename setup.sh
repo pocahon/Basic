@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/zsh
 
 set -e
 
@@ -14,12 +14,12 @@ install_go_tool() {
     go install "$pkg@latest"
 }
 
-# Voeg Go bin directory toe aan PATH in ~/.bashrc als dat nog niet is gedaan
+# Voeg Go bin directory toe aan PATH in ~/.zshrc als dat nog niet is gedaan
 GOPATH=$(go env GOPATH)
 GO_BIN="$GOPATH/bin"
-if ! grep -q "$GO_BIN" ~/.bashrc; then
-    echo "export PATH=\$PATH:$GO_BIN" >> ~/.bashrc
-    echo "Go bin directory toegevoegd aan PATH in ~/.bashrc"
+if ! grep -q "$GO_BIN" ~/.zshrc; then
+    echo "export PATH=\$PATH:$GO_BIN" >> ~/.zshrc
+    echo "Go bin directory toegevoegd aan PATH in ~/.zshrc"
 fi
 export PATH=$PATH:$GO_BIN
 
@@ -43,4 +43,4 @@ mkdir -p "$WORDLIST_DIR"
 echo "Downloading wordlists from https://wordlists-cdn.assetnote.io/data/manual/ ..."
 wget -r -np -nH --cut-dirs=3 -P "$WORDLIST_DIR" https://wordlists-cdn.assetnote.io/data/manual/
 
-echo "Installatie voltooid. Voer 'source ~/.bashrc' uit of start een nieuwe shell om PATH wijzigingen te laden."
+echo "Installatie voltooid. Voer 'source ~/.zshrc' uit of start een nieuwe shell om PATH wijzigingen te laden."
